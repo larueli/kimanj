@@ -144,7 +144,6 @@ class UserController extends AbstractController
         return $this->redirectToRoute("accueil");
     }
 
-
     /**
      * @Route("/etuUTT", name="etuUtt")
      * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
