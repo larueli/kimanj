@@ -7,17 +7,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     private $uuid;
+    private $token;
 
     private $nom;
 
     private $roles = [];
 
-    public function getUuid(): ?string
+    /**
+     * User constructor.
+     * @param $uuid
+     * @param $token
+     * @param $nom
+     */
+    public function __construct($uuid, $token, $nom)
+    {
+        $this->uuid = $uuid;
+        $this->token = $token;
+        $this->nom = $nom;
+    }
+
+
+    public function getUuid() : ?string
     {
         return $this->uuid;
     }
 
-    public function setUuid(string $uuid): self
+    public function setUuid(string $uuid) : self
     {
         $this->uuid = $uuid;
 

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+    <div class="container my-auto">
+        <h1>Voici la liste des gens kimanj</h1>
+
+        {% for creneau in creneaux %}
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapse{{ creneau.id }}" role="button"
+                   aria-expanded="false" aria-controls="collapseExample">
+                    {{ creneau.horaire }}
+                </a>
+            <div class="collapse" id="collapse{{ creneau.id }}">
+                <div class="card card-body">
+                    <ul>
+                        {% for reservation in creneau.reservations %}
+                            <li>{{ reservation.nom }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}
