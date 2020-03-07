@@ -23,11 +23,11 @@ class QuestionType extends AbstractType
                                                                 "label"    => "Les réponses sont effacées tous les jours à " . $_ENV[ 'HEURE_RAZ' ]))
             ->add('reponsesPubliques', CheckboxType::class,
                   array("required" => false, "label" => "Les résultats sont publics",
-                        "help"     => "Tout le monde peut voir le nombre de voix, et éventuellement les noms si non anonyme"))
+                        "help"     => "Tout le monde peut voir le nombre de voix, et éventuellement les noms si non anonyme. Si vous passez de privé à public, les réponses sont effacées"))
             ->add("choixMultiple", CheckboxType::class,
                   array("required" => false, "label" => "Plusieurs réponses possibles par personne"))
             ->add("reponsesAnonymes", CheckboxType::class, array("required" => false, "label" => "Réponses anonymes",
-                                                                 "help"     => "N'affichera que le nombre de voix. Si résultats non publics, seul vous pourrez voir le nombre de voix"));
+                                                                 "help"     => "N'affichera que le nombre de voix. Si résultats non publics, seul vous pourrez voir le nombre de voix. Si vous passez d'anonyme à non anonyme, les réponses sont effacées"));
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -14,8 +14,8 @@ class ChoixUniqueTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        if (empty($value))
-            return $value;
+        if (empty($value->getValues()))
+            return NULL;
         return $value->getValues()[ 0 ];
     }
 

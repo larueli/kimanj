@@ -8,9 +8,9 @@ use App\Entity\ChoixPossible;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Form\DataTransformer\ChoixUniqueTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ReponseType extends AbstractType
@@ -33,8 +33,9 @@ class ReponseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('choix', ChoiceType::class,
+            ->add('choix', EntityType::class,
                   array("mapped"                                                                      => true,
+                        "class"                                                                       => ChoixPossible::class,
                         "required"                                                                    => true,
                         "multiple"                                                                    => $options[ "question" ]->getChoixMultiple(),
                         "expanded"                                                                    => $options[ "question" ]->getChoixMultiple(),

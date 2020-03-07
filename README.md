@@ -1,22 +1,30 @@
 # Kimanj
 
 ## But
-Kimanj est une application de sondage ayant pour but de désengorger les conversations Messenger.
+Kimanj est une application de sondage ayant pour but de désengorger les conversations Messenger entre amis.
 
 ## Fonctionnalités (v2) :
-* Connexion via le [site etu](https://etu.utt.fr/api/panel) de l'UTT
+* Connexion via le [site etu](https://etu.utt.fr/api/panel) de l'[Université de Technologie de Troyes](https://www.utt.fr)
 * Réinitialisation des réponses sur certaines questions via cron
-* Réponses anonymes
+* Réponses anonymes ou non
 * Résultats publics ou non
-* Affichage ergonomique des questions
-* Développé avec Symfony 4.4 / Doctrine 2.7
+* Affichage compatible smartphone / tablettes
+* Affichage ergonomique des questions sur une seule page
+* Développé avec Symfony 4.4 / Doctrine 2.7 / Bootstrap 4.1
 
+## Captures d'écran
+### Page d'accueil
+![Image de la page d'accueil](docs/accueil.png "Page d'accueil")
+### Edition d'une question
+![Image de la page d'édition d'une question](docs/question.png "Edition d'une question")
+### Répondre sur mobile
+![Image de la page de réponse sur mobile](docs/reponse-mobile.png "Edition d'une réponse sur mobile")
 ## Installation
-###0) Prérequis
+### 0) Prérequis
 * Php 7.1
 * MariaDB / MySQL 5.7
 * composer
-###1) Récupérez le repos et installez les dépendances
+### 1) Récupérez le repos et installez les dépendances
 ```
 sudo -u www-data git clone https://github.com/larueli/kimanj.git
 sudo -u www-data cd kimanj && composer install

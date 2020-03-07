@@ -51,8 +51,9 @@ class UserController extends AbstractController
                                  GestionEntite $gestionEntite)
     {
         /** @var Question $question */
-        $question = $gestionEntite->creerOuRecuperer(Question::class, $id);
-        $user     = $this->getUser();
+        $question      = $gestionEntite->creerOuRecuperer(Question::class, $id);
+        $user          = $this->getUser();
+        $questionAvant = clone $question;
         if ($this->isGranted("edit", $question)) {
             $question
                 ->setUuid($user->getUsername())
@@ -74,6 +75,17 @@ class UserController extends AbstractController
                 $entityManager->flush();
                 if ($creation)
                     return $this->redirectToRoute("editChoix", ["id" => $question->getId()]);
+                if ($questionAvant->getChoixMultiple() && !$question->getChoixMultiple()) {
+                    $this->addFlash("warning",
+                                    "Vous avez restreint les réponses, pour garantir l'intégrité des données les réponses ont été effacées");
+                    return $this->redirectToRoute("supprimerReponsesQuestion", ["id" => $question->getId()]);
+                }
+                if (( $questionAvant->getReponsesAnonymes() && !$question->getReponsesAnonymes() ) || ( !$questionAvant->getReponsesPubliques() && $question->getReponsesPubliques() )) {
+                    $this->addFlash("warning",
+                                    "Vous avez modifié la confidentialité des réponses. Pour protéger les utilisateurs, leurs réponses ont été supprimées.");
+                    return $this->redirectToRoute("supprimerReponsesQuestion", ["id" => $question->getId()]);
+                }
+                $this->addFlash("success", "Votre question a été modifiée");
                 return $this->redirectToRoute("accueil");
             }
             return $this->render('formulaire_basique.html.twig', [
@@ -86,6 +98,7 @@ class UserController extends AbstractController
                 "route_retour" => $this->generateUrl("accueil"),
             ]);
         }
+        $this->addFlash("danger", "Accès refusé");
         return $this->redirectToRoute("accueil");
     }
 
@@ -103,6 +116,7 @@ class UserController extends AbstractController
             $entityManager->remove($reponse);
         }
         $entityManager->flush();
+        $this->addFlash("success", "Toutes les réponses à votre question ont été effacées");
         return $this->redirectToRoute("accueil");
     }
 
@@ -118,6 +132,7 @@ class UserController extends AbstractController
     {
         $entityManager->remove($question);
         $entityManager->flush();
+        $this->addFlash("warning", "Votre question et ses réponses ont été effacées");
         return $this->redirectToRoute("accueil");
     }
 
@@ -172,6 +187,7 @@ class UserController extends AbstractController
         $choixPossible = $entityManager->getRepository(ChoixPossible::class)->find($idChoix);
         $entityManager->remove($choixPossible);
         $entityManager->flush();
+        $this->addFlash("success", "Option supprimée !");
         return $this->redirectToRoute("accueil");
     }
 
@@ -213,6 +229,7 @@ class UserController extends AbstractController
                     ->setDeposeeLe(new DateTime("now"));
                 $entityManager->persist($reponse);
                 $entityManager->flush();
+                $this->addFlash("success", "Votre réponse a bien été prise en compte");
                 return $this->redirectToRoute("accueil");
             }
             return $this->render('formulaire_basique.html.twig', [
@@ -225,6 +242,7 @@ class UserController extends AbstractController
                 "route_retour" => $this->generateUrl("accueil"),
             ]);
         }
+        $this->addFlash("danger", "Accès refusé");
         return $this->redirectToRoute("accueil");
     }
 
@@ -241,6 +259,7 @@ class UserController extends AbstractController
     {
         $entityManager->remove($reponse);
         $entityManager->flush();
+        $this->addFlash("success", "Votre réponse a été effacée");
         return $this->redirectToRoute("accueil");
     }
 }

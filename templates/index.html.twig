@@ -69,8 +69,8 @@
                             <div class="col">
                                 <div class="row">
                                     <p class="border-bottom">
-                                        {{ choix.texte }}
-                                        , {% if question.reponsesPubliques or is_granted("edit", object=question) %}{{ choix.reponses.count }} voix{% endif %}{% if is_granted("edit", object=question) %} -
+                                        {{ choix.texte }},
+                                        {% if question.reponsesPubliques or is_granted("edit", object=question) %}{{ choix.reponses.count }} voix{% endif %}{% if is_granted("edit", object=question) %} -
                                         <a href="{{ path('editChoix',{'id': question.id, 'idChoix': choix.id}) }}">
                                                 éditer le choix</a>{% endif %}
                                     </p>
@@ -79,8 +79,8 @@
                                     <ul>
                                         {% for reponse in choix.reponses %}
                                             {% if is_granted("view", object = reponse) %}
-                                                <li>{{ reponse.nom }}
-                                                    , {{ reponse.deposeeLe | date('d/m H:i') }}{% if reponse.commentaire is not null %}, {{ reponse.commentaire }}{% endif %}</li>
+                                                <li>{{ reponse.nom }},
+                                                    {{ reponse.deposeeLe | date('d/m H:i') }}{% if reponse.commentaire is not null %}, {{ reponse.commentaire }}{% endif %}</li>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
