@@ -2,169 +2,245 @@
 
 namespace App\Controller;
 
-use App\Entity\Creneau;
-use App\Entity\Reservation;
-use App\Form\CreneauType;
-use App\Form\ReservationType;
+use DateTime;
+use Exception;
+use App\Entity\Reponse;
+use App\Entity\Question;
+use App\Form\ReponseType;
+use App\Form\QuestionType;
+use App\Entity\ChoixPossible;
+use App\Service\GestionEntite;
+use App\Form\ChoixPossibleType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserController extends AbstractController
 {
     /**
-     * @Route("/connexion", name="connexion")
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
-     * @param Security $security
-     * @return RedirectResponse
-     */
-    public function connexion(Security $security)
-    {
-        return $this->redirectToRoute("addResa", ["uuid" => $security->getUser()->getUsername()]);
-    }
-
-    /**
      * @Route("/",name="accueil")
      * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
      * @param EntityManagerInterface $entityManager
+     *
      * @return Response
      */
     public function accueil(EntityManagerInterface $entityManager)
     {
-        $creneaux = $entityManager->getRepository(Creneau::class)->findAll();
         return $this->render('index.html.twig', [
-            'creneaux' => $creneaux,
+            'questions' => $entityManager->getRepository(Question::class)->findAll(),
+            "heureRAZ"  => $_ENV[ "HEURE_RAZ" ],
         ]);
     }
 
     /**
-     * @Route("/jemange/{uuid}", name="addResa")
+     * @Route("/editQuestion/{id?}", name="editQuestion")
+     * @param                        $id
+     * @param EntityManagerInterface $entityManager
+     * @param Request                $request
      * @IsGranted("ROLE_USER")
+     * @param GestionEntite          $gestionEntite
+     *
+     * @return Response
+     * @throws Exception
      */
-    public function editReservation($uuid, EntityManagerInterface $entityManager, Security $security, Request $request)
+    public function editQuestion($id, EntityManagerInterface $entityManager, Request $request,
+                                 GestionEntite $gestionEntite)
     {
-        $user = $security->getUser();
-        if ($user->getUsername() === $uuid) {
-            $reservation = $entityManager->getRepository(Reservation::class)->findOneBy(["uuid" => $uuid]);
-            if (is_null($reservation)) {
-                $reservation = new Reservation();
-                $reservation->setNom($user->getNom());
-                $reservation->setUuid($user->getUsername());
+        /** @var Question $question */
+        $question = $gestionEntite->creerOuRecuperer(Question::class, $id);
+        $user     = $this->getUser();
+        if ($this->isGranted("edit", $question)) {
+            $question
+                ->setUuid($user->getUsername())
+                ->setAuteur($user->getNom());
+            if (is_null($question->getId())) {
+                $question
+                    ->setChoixMultiple(true)
+                    ->setReponsesPubliques(true)
+                    ->setEstRAZQuotidien(true)
+                    ->setPoseeLe(new DateTime("now"))
+                    ->setReponsesAnonymes(false);
             }
-            $form = $this->createForm(ReservationType::class, $reservation);
+            $form = $this->createForm(QuestionType::class, $question);
             $form->handleRequest($request);
+            $creation = is_null($question->getId());
             if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($reservation);
+                $question->setPoseeLe(new DateTime("now"));
+                $entityManager->persist($question);
                 $entityManager->flush();
+                if ($creation)
+                    return $this->redirectToRoute("editChoix", ["id" => $question->getId()]);
                 return $this->redirectToRoute("accueil");
             }
             return $this->render('formulaire_basique.html.twig', [
-                "creation" => is_null($reservation->getId()),
-                'titre' => "Edition d'une reservation",
-                "route_post" => $this->generateUrl("addResa", ["uuid" => $uuid]),
-                'formulaire' => $form->createView(),
-                "description" => "Edition d'une reservation",
-                "route_delete" => $this->generateUrl('supprimerResa', ["id" => $reservation->getId()]),
-                "route_retour" => $this->generateUrl("accueil"),
-            ]);
-        } else {
-            return $this->redirectToRoute("addResa", ["uuid" => $security->getUser()->getUsername()]);
-        }
-    }
-
-    /**
-     *
-     * @Route("/supprimerResa/{id?}", name="supprimerResa")
-     * @IsGranted("ROLE_USER")
-     * @param Reservation $reservation
-     * @param EntityManagerInterface $entityManager
-     * @param Security $security
-     * @return RedirectResponse
-     */
-    public function supprimerResa(Reservation $reservation, EntityManagerInterface $entityManager, Security $security)
-    {
-        $user = $security->getUser();
-        if ($user->getUsername() === $reservation->getUuid()) {
-            $entityManager->remove($reservation);
-            $entityManager->flush();
-            return $this->redirectToRoute("accueil");
-        }
-    }
-
-    /**
-     * @Route("/editCreneau/{id?}", name="creneau")
-     * @IsGranted("ROLE_USER")
-     * @param $id
-     * @param EntityManagerInterface $entityManager
-     * @return RedirectResponse|Response
-     */
-    public function addCreneau($id, EntityManagerInterface $entityManager, Request $request)
-    {
-        if (is_null($id))
-            $creneau = new Creneau();
-        if (is_int($id))
-            $creneau = $entityManager->getRepository(Creneau::class)->find($id);
-        if ( !is_null($creneau)) {
-            $form = $this->createForm(CreneauType::class, $creneau);
-            $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($creneau);
-                $entityManager->flush();
-                return $this->redirectToRoute("accueil");
-            }
-            return $this->render('formulaire_basique.html.twig', [
-                "creation" => is_null($creneau->getId()),
-                'titre' => "Edition d'un créneau",
-                "route_post" => $this->generateUrl("creneau", ["id" => $id]),
-                'formulaire' => $form->createView(),
-                "description" => "Edition d'un créneau",
-                "route_delete" => $this->generateUrl('supprimerCreneau', ["id" => $id]),
+                "creation"     => $creation,
+                'titre'        => "Edition d'une question",
+                "route_post"   => $this->generateUrl("editQuestion", ["id" => $question->getId()]),
+                'formulaire'   => $form->createView(),
+                "description"  => "Ajouter une question",
+                "route_delete" => $this->generateUrl('supprimerQuestion', ["id" => $question->getId()]),
                 "route_retour" => $this->generateUrl("accueil"),
             ]);
         }
+        return $this->redirectToRoute("accueil");
     }
 
     /**
-     *
-     * @Route("/supprimerCreneau/{id?}", name="supprimerCreneau")
-     * @IsGranted("ROLE_USER")
-     * @param Creneau $creneau
+     * @Route("/supprimerReponsesQuestion/{id}", name="supprimerReponsesQuestion")
+     * @param Question               $question
+     * @IsGranted("edit", subject="question")
      * @param EntityManagerInterface $entityManager
+     *
      * @return RedirectResponse
      */
-    public function supprimerCreneau(Creneau $creneau, EntityManagerInterface $entityManager)
+    public function supprimerReponsesQuestion(Question $question, EntityManagerInterface $entityManager)
     {
-        $entityManager->remove($creneau);
+        foreach ($question->getReponses() as $reponse) {
+            $entityManager->remove($reponse);
+        }
         $entityManager->flush();
         return $this->redirectToRoute("accueil");
     }
 
     /**
-     * @Route("/etuUTT", name="etuUtt")
-     * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
+     * @Route("/supprimerQuestion/{id?}", name="supprimerQuestion")
+     * @IsGranted("edit", subject="question")
+     * @param Question               $question
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return RedirectResponse
      */
-    public function goEtuUTT()
+    public function supprimerQuestion(Question $question, EntityManagerInterface $entityManager)
     {
-        $baseUrl = "https://etu.utt.fr";
-        $donnees = array(
-            "client_id" => $_ENV['CLIENT_ID'],
-            "response_type" => "code",
-            "state" => "xyz"
-        );
-        return $this->redirect($baseUrl . "/api/oauth/authorize?" . http_build_query($donnees));
+        $entityManager->remove($question);
+        $entityManager->flush();
+        return $this->redirectToRoute("accueil");
     }
 
     /**
-     * @return RedirectResponse
-     * @Route("/deconnexion", name="deconnexion")
+     * @Route("/editChoix/{id}/{idChoix?}", name="editChoix")
+     * @param                        $idChoix
+     * @param Question               $question
+     * @param GestionEntite          $gestionEntite
+     * @param Request                $request
+     * @IsGranted("edit", subject="question")
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return Response
      */
-    public function deconnexion()
+    public function editChoix($idChoix, Question $question, GestionEntite $gestionEntite, Request $request,
+                              EntityManagerInterface $entityManager)
     {
+        /** @var ChoixPossible $choix */
+        $choix = $gestionEntite->creerOuRecuperer(ChoixPossible::class, $idChoix);
+        $choix->setQuestion($question);
+        $form = $this->createForm(ChoixPossibleType::class, $choix);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($choix);
+            $entityManager->flush();
+            $this->addFlash("success", "L'option a été ajoutée, vous pouvez en ajouter une autre.");
+            $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
+        }
+        return $this->render('formulaire_basique.html.twig', [
+            "creation"     => is_null($choix->getId()),
+            'titre'        => "Edition d'un choix",
+            "route_post"   => $this->generateUrl("editChoix", ["idChoix" => $idChoix, "id" => $question->getId()]),
+            'formulaire'   => $form->createView(),
+            "description"  => $question->getInterrogation(),
+            "route_delete" => $this->generateUrl('supprimerChoix', ["id" => $choix->getId()]),
+            "route_retour" => $this->generateUrl("accueil"),
+        ]);
+    }
+
+    /**
+     *
+     * @Route("/supprimerChoix/id/{idChoix?}", name="supprimerChoix")
+     * @IsGranted("edit", subject="question")
+     * @param Question               $question
+     * @param                        $idChoix
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return RedirectResponse
+     */
+    public function supprimerChoix(Question $question, $idChoix, EntityManagerInterface $entityManager)
+    {
+        $choixPossible = $entityManager->getRepository(ChoixPossible::class)->find($idChoix);
+        $entityManager->remove($choixPossible);
+        $entityManager->flush();
+        return $this->redirectToRoute("accueil");
+    }
+
+    /**
+     * @Route("/editReponse/{id}", name="editReponse")
+     * @IsGranted("view", subject="question")
+     * @param Question               $question
+     * @param GestionEntite          $gestionEntite
+     * @param EntityManagerInterface $entityManager
+     * @param Request                $request
+     *
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function editReponse(Question $question, GestionEntite $gestionEntite, EntityManagerInterface $entityManager,
+                                Request $request)
+    {
+        $user               = $this->getUser();
+        $idReponse          = NULL;
+        $reponseUtilisateur = $entityManager->getRepository(Reponse::class)->findOneBy(["uuid"     => $user->getUsername(),
+                                                                                        "question" => $question->getId()]);
+        if ( !is_null($reponseUtilisateur))
+            $idReponse = $reponseUtilisateur->getId();
+        /** @var Reponse $reponse */
+        $reponse = $gestionEntite->creerOuRecuperer(Reponse::class, $idReponse);
+        if ($this->isGranted("edit", $reponse)) {
+            $reponse
+                ->setUuid($user->getUsername())
+                ->setNom($user->getNom())
+                ->setQuestion($question)
+                ->setDeposeeLe(new DateTime("now"));
+            $form = $this->createForm(ReponseType::class, $reponse, array("question" => $question));
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $reponse
+                    ->setUuid($user->getUsername())
+                    ->setNom($user->getNom())
+                    ->setQuestion($question)
+                    ->setDeposeeLe(new DateTime("now"));
+                $entityManager->persist($reponse);
+                $entityManager->flush();
+                return $this->redirectToRoute("accueil");
+            }
+            return $this->render('formulaire_basique.html.twig', [
+                "creation"     => is_null($reponse->getId()),
+                'titre'        => "Edition d'une réponse",
+                "route_post"   => $this->generateUrl("editReponse", ["id" => $question->getId()]),
+                'formulaire'   => $form->createView(),
+                "description"  => $question->getInterrogation(),
+                "route_delete" => $this->generateUrl('supprimerReponse', ["id" => $reponse->getId()]),
+                "route_retour" => $this->generateUrl("accueil"),
+            ]);
+        }
+        return $this->redirectToRoute("accueil");
+    }
+
+    /**
+     *
+     * @Route("/supprimerReponse/{id?}", name="supprimerReponse")
+     * @IsGranted("edit", subject="reponse")
+     * @param Reponse                $reponse
+     * @param EntityManagerInterface $entityManager
+     *
+     * @return RedirectResponse
+     */
+    public function supprimerReponse(Reponse $reponse, EntityManagerInterface $entityManager)
+    {
+        $entityManager->remove($reponse);
+        $entityManager->flush();
         return $this->redirectToRoute("accueil");
     }
 }

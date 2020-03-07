@@ -3,14 +3,14 @@
 namespace App\Repository;
 
 use App\Entity\Question;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
- * @method Question|null find($id, $lockMode = null, $lockVersion = null)
- * @method Question|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Question|null find( $id, $lockMode = NULL, $lockVersion = NULL )
+ * @method Question|null findOneBy( array $criteria, array $orderBy = NULL )
  * @method Question[]    findAll()
- * @method Question[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Question[]    findBy( array $criteria, array $orderBy = NULL, $limit = NULL, $offset = NULL )
  */
 class QuestionRepository extends ServiceEntityRepository
 {

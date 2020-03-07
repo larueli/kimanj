@@ -1,0 +1,42 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <PHPCodeStyleSettings>
+      <option name="ALIGN_KEY_VALUE_PAIRS" value="true" />
+      <option name="ALIGN_PHPDOC_PARAM_NAMES" value="true" />
+      <option name="ALIGN_PHPDOC_COMMENTS" value="true" />
+      <option name="ALIGN_ASSIGNMENTS" value="true" />
+      <option name="ALIGN_INLINE_COMMENTS" value="true" />
+      <option name="COMMA_AFTER_LAST_ARRAY_ELEMENT" value="true" />
+      <option name="PHPDOC_BLANK_LINE_BEFORE_TAGS" value="true" />
+      <option name="PHPDOC_BLANK_LINES_AROUND_PARAMETERS" value="true" />
+      <option name="IMPORT_SORTING" value="BY_LENGTH" />
+      <option name="GROUP_USE_WRAP" value="1" />
+      <option name="UPPER_CASE_NULL_CONST" value="true" />
+      <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
+      <option name="ELSE_IF_STYLE" value="COMBINE" />
+      <option name="SPACES_AROUND_VAR_WITHIN_BRACKETS" value="true" />
+      <option name="ALIGN_CLASS_CONSTANTS" value="true" />
+      <option name="SPACE_BEFORE_UNARY_NOT" value="true" />
+      <option name="SPACE_AROUND_ASSIGNMENT_IN_DECLARE" value="true" />
+      <option name="SPACE_BEFORE_COLON_IN_RETURN_TYPE" value="true" />
+    </PHPCodeStyleSettings>
+    <codeStyleSettings language="PHP">
+      <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
+      <option name="BLANK_LINES_AFTER_PACKAGE" value="1" />
+      <option name="ELSE_ON_NEW_LINE" value="true" />
+      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+      <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
+      <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
+      <option name="ALIGN_GROUP_FIELD_DECLARATIONS" value="true" />
+      <option name="SPACE_WITHIN_PARENTHESES" value="true" />
+      <option name="SPACE_WITHIN_BRACKETS" value="true" />
+      <option name="SPACE_AFTER_TYPE_CAST" value="true" />
+      <option name="CALL_PARAMETERS_WRAP" value="1" />
+      <option name="METHOD_PARAMETERS_WRAP" value="1" />
+      <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
+      <option name="ARRAY_INITIALIZER_WRAP" value="1" />
+      <option name="ASSIGNMENT_WRAP" value="1" />
+      <option name="WRAP_ON_TYPING" value="0" />
+    </codeStyleSettings>
+  </code_scheme>
+</component>

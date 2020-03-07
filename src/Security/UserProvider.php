@@ -2,12 +2,10 @@
 
 namespace App\Security;
 
-use Exception;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
@@ -18,10 +16,10 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      * If you're not using these features, you do not need to implement
      * this method.
      *
+     * @param $username
+     *
      * @return UserInterface
      *
-     * @throws UsernameNotFoundException if the user is not found
-     * @throws Exception
      */
     public function loadUserByUsername($username)
     {
@@ -43,11 +41,13 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      * If your firewall is "stateless: true" (for a pure API), this
      * method is not called.
      *
+     * @param UserInterface $user
+     *
      * @return UserInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if ( !$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
         }
         return $user;
@@ -58,6 +58,10 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 
     /**
      * Tells Symfony to use this provider for this User class.
+     *
+     * @param $class
+     *
+     * @return bool
      */
     public function supportsClass($class)
     {
@@ -66,8 +70,11 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 
     /**
      * Upgrades the encoded password of a user, typically for using a better hash algorithm.
+     *
+     * @param UserInterface $user
+     * @param string        $newEncodedPassword
      */
-    public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
+    public function upgradePassword(UserInterface $user, string $newEncodedPassword) : void
     {
         // TODO: when encoded passwords are in use, this method should:
         // 1. persist the new password in the user storage

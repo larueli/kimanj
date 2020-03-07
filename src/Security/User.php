@@ -15,15 +15,16 @@ class User implements UserInterface
 
     /**
      * User constructor.
+     *
      * @param $uuid
      * @param $token
      * @param $nom
      */
     public function __construct($uuid, $token, $nom)
     {
-        $this->uuid = $uuid;
+        $this->uuid  = $uuid;
         $this->token = $token;
-        $this->nom = $nom;
+        $this->nom   = $nom;
     }
 
 
@@ -44,7 +45,7 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername() : string
     {
         return (string) $this->uuid;
     }
@@ -52,7 +53,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles() : array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -61,7 +62,7 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles) : self
     {
         $this->roles = $roles;
 
@@ -96,7 +97,7 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getNom(): ?string
+    public function getNom() : ?string
     {
         return $this->nom;
     }
@@ -107,5 +108,21 @@ class User implements UserInterface
     public function setNom($nom) : void
     {
         $this->nom = $nom;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token) : void
+    {
+        $this->token = $token;
     }
 }

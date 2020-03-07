@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Creneau;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\ChoixPossible;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
- * @method Creneau|null find($id, $lockMode = null, $lockVersion = null)
- * @method Creneau|null findOneBy(array $criteria, array $orderBy = null)
- * @method Creneau[]    findAll()
- * @method Creneau[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ChoixPossible|null find( $id, $lockMode = NULL, $lockVersion = NULL )
+ * @method ChoixPossible|null findOneBy( array $criteria, array $orderBy = NULL )
+ * @method ChoixPossible[]    findAll()
+ * @method ChoixPossible[]    findBy( array $criteria, array $orderBy = NULL, $limit = NULL, $offset = NULL )
  */
-class CreneauRepository extends ServiceEntityRepository
+class ChoixPossibleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Creneau::class);
+        parent::__construct($registry, ChoixPossible::class);
     }
 
     // /**
-    //  * @return Creneau[] Returns an array of Creneau objects
+    //  * @return ChoixPossible[] Returns an array of ChoixPossible objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class CreneauRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Creneau
+    public function findOneBySomeField($value): ?ChoixPossible
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')

@@ -2,20 +2,21 @@
 
 namespace App\Command;
 
-use App\Entity\Reservation;
+use App\Entity\Question;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CleanupCommand extends Command
 {
     protected static $defaultName = 'app:cleanup';
-    private $entityManager;
+    private          $entityManager;
 
     /**
      * CleanupCommand constructor.
+     *
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
@@ -28,18 +29,21 @@ class CleanupCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Efface toutes les réservations');
+            ->setDescription('Efface toutes les réponses marquées pour suppression quotidienne');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $io = new SymfonyStyle($input, $output);
-        foreach ($this->entityManager->getRepository(Reservation::class)->findAll() as $reservation) {
-            $this->entityManager->remove($reservation);
+        foreach ($this->entityManager->getRepository(Question::class)
+                     ->findBy(array("estRAZQuotidien" => true)) as $question) {
+            foreach ($question->getReponses() as $reponse) {
+                $this->entityManager->remove($reponse);
+            }
         }
         $this->entityManager->flush();
 
-        $io->success('Reservations effacées !');
+        $io->success('Réponses effacées !');
 
         return 0;
     }
