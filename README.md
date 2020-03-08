@@ -19,9 +19,11 @@ Kimanj est une application de sondage ayant pour but de désengorger les convers
 ![Image de la page d'édition d'une question](docs/question.png "Edition d'une question")
 ### Répondre sur mobile
 ![Image de la page de réponse sur mobile](docs/reponse-mobile.png "Edition d'une réponse sur mobile")
+
+Plus de documentation dans le dossier docs
 ## Installation
 ### 0) Prérequis
-* Php 7.1
+* Php 7.4
 * MariaDB / MySQL 5.7
 * composer
 ### 1) Récupérez le repos et installez les dépendances
