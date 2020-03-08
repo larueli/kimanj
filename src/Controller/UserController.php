@@ -158,6 +158,12 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($choix);
             $entityManager->flush();
+            if ( !empty($entityManager->getRepository(ChoixPossible::class)->findBy(["question" => $choix->getQuestion()
+                ->getId(),
+                                                                                     "texte"    => $choix->getTexte()]))) {
+                $this->addFlash("danger", "Une option identique existe déjà pour cette question !");
+                $this->redirectToRoute("accueil");
+            }
             $this->addFlash("success",
                             "L'option " . $choix->getTexte() . " a été ajoutée, vous pouvez en ajouter une autre.");
             $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
@@ -175,7 +181,7 @@ class UserController extends AbstractController
 
     /**
      *
-     * @Route("/supprimerChoix/id/{idChoix?}", name="supprimerChoix")
+     * @Route("/supprimerChoix/{id}/{idChoix?}", name="supprimerChoix")
      * @IsGranted("edit", subject="question")
      * @param Question               $question
      * @param                        $idChoix
