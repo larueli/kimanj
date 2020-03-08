@@ -162,7 +162,7 @@ class UserController extends AbstractController
                 ->getId(),
                                                                                      "texte"    => $choix->getTexte()]))) {
                 $this->addFlash("danger", "Une option identique existe déjà pour cette question !");
-                $this->redirectToRoute("accueil");
+                return $this->redirectToRoute("accueil");
             }
             $this->addFlash("success",
                             "L'option " . $choix->getTexte() . " a été ajoutée, vous pouvez en ajouter une autre.");
