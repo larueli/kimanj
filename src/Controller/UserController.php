@@ -174,7 +174,8 @@ class UserController extends AbstractController
             "route_post"   => $this->generateUrl("editChoix", ["idChoix" => $idChoix, "id" => $question->getId()]),
             'formulaire'   => $form->createView(),
             "description"  => $question->getInterrogation(),
-            "route_delete" => $this->generateUrl('supprimerChoix', ["id" => $choix->getId()]),
+            "route_delete" => $this->generateUrl('supprimerChoix',
+                                                 ["id" => $question->getId(), "idChoix" => $choix->getId()]),
             "route_retour" => $this->generateUrl("accueil"),
         ]);
     }
