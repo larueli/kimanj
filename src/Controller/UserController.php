@@ -166,7 +166,7 @@ class UserController extends AbstractController
             }
             $this->addFlash("success",
                             "L'option " . $choix->getTexte() . " a été ajoutée, vous pouvez en ajouter une autre.");
-            $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
+            return $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
         }
         return $this->render('formulaire_basique.html.twig', [
             "creation"     => is_null($choix->getId()),
