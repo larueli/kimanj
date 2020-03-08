@@ -158,7 +158,8 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($choix);
             $entityManager->flush();
-            $this->addFlash("success", "L'option a été ajoutée, vous pouvez en ajouter une autre.");
+            $this->addFlash("success",
+                            "L'option " . $choix->getTexte() . " a été ajoutée, vous pouvez en ajouter une autre.");
             $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
         }
         return $this->render('formulaire_basique.html.twig', [
