@@ -156,14 +156,14 @@ class UserController extends AbstractController
         $form = $this->createForm(ChoixPossibleType::class, $choix);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($choix);
-            $entityManager->flush();
             if ( !empty($entityManager->getRepository(ChoixPossible::class)->findBy(["question" => $choix->getQuestion()
                 ->getId(),
                                                                                      "texte"    => $choix->getTexte()]))) {
                 $this->addFlash("danger", "Une option identique existe déjà pour cette question !");
                 return $this->redirectToRoute("accueil");
             }
+            $entityManager->persist($choix);
+            $entityManager->flush();
             $this->addFlash("success",
                             "L'option " . $choix->getTexte() . " a été ajoutée, vous pouvez en ajouter une autre.");
             return $this->redirectToRoute("editChoix", ["id" => $question->getId(), "idChoix" => ""]);
