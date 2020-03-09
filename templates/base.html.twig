@@ -54,7 +54,8 @@
                                             question</b></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('deconnexion') }}"><b>Se déconnecter</b></a>
+                                    <a class="nav-link" href="{{ path('deconnexion') }}"><b>Se déconnecter
+                                            ({{ app.user.nom }})</b></a>
                                 </li>
                             {% endif %}
                         </ul>
