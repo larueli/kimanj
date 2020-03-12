@@ -44,12 +44,17 @@
                                     <br>
                                     Réponses anonymes
                                     : {% if question.reponsesAnonymes %}Oui, on ne pourra voir que le nombre de voix.{% else %}Non{% endif %}
+                                    {% if is_granted("edit", object = question) %}
+                                        <br>
+                                        Visible : {% if question.estVisible %}Oui{% else %}Non{% endif %}
+                                    {% endif %}
                                 </div>
                             </div>
                             {% if is_granted("ROLE_USER") %}
                                 <div class="col">
                                     <div class="row my-1">
-                                        <a class="btn btn-success" href="{{ path('editReponse', {'id': question.id}) }}">Répondre</a>
+                                        <a class="btn btn-success"
+                                           href="{{ path('editReponse', {'id': question.id}) }}">Répondre</a>
                                     </div>
                                     {% if is_granted("edit", object = question) %}
                                         <div class="row my-1">
