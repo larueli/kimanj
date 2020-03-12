@@ -64,6 +64,7 @@ class UserController extends AbstractController
                     ->setReponsesPubliques(true)
                     ->setEstRAZQuotidien(true)
                     ->setPoseeLe(new DateTime("now"))
+                    ->setEstVisible(true)
                     ->setReponsesAnonymes(false);
             }
             $form = $this->createForm(QuestionType::class, $question);

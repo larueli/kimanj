@@ -26,75 +26,77 @@
         {% set valeur = 0 %}
         <div class="tab-content p-1">
             {% for question in questions %}
-                <div class="tab-pane fade{% if valeur == 0 %} show active{% endif %}" id="question{{ valeur }}"
-                     role="tabpanel" aria-labelledby="question{{ valeur }}">
-                    <div class="row">
-                        <div class="col-xs-12 col-md text-left">
-                            <div class="row h3">{{ question.interrogation|nl2br }}</div>
-                            <div class="row text-muted">posée par {{ question.auteur }}
-                                le {{ question.poseeLe | date("d/m H:i") }}</div>
-                            <div class="row text-muted my-2">Choix multiples
-                                : {% if question.choixMultiple %}Oui{% else %}Non{% endif %}<br>
-                                Réponses effacées
-                                : {% if question.estRAZQuotidien %}tous les jours à {{ heureRAZ }}{% else %}manuellement par l'auteur{% endif %}
-                                <br>
-                                Résultats publics
-                                : {% if question.reponsesPubliques %}Oui{% else %}Non, seul l'auteur pourra voir les résultats.{% endif %}
-                                <br>
-                                Réponses anonymes
-                                : {% if question.reponsesAnonymes %}Oui, on ne pourra voir que le nombre de voix.{% else %}Non{% endif %}
-                            </div>
-                        </div>
-                        {% if is_granted("ROLE_USER") %}
-                            <div class="col">
-                                <div class="row my-1">
-                                    <a class="btn btn-success" href="{{ path('editReponse', {'id': question.id}) }}">Répondre</a>
+                {% if is_granted("view", object=question) %}
+                    <div class="tab-pane fade{% if valeur == 0 %} show active{% endif %}" id="question{{ valeur }}"
+                         role="tabpanel" aria-labelledby="question{{ valeur }}">
+                        <div class="row">
+                            <div class="col-xs-12 col-md text-left">
+                                <div class="row h3">{{ question.interrogation|nl2br }}</div>
+                                <div class="row text-muted">posée par {{ question.auteur }}
+                                    le {{ question.poseeLe | date("d/m H:i") }}</div>
+                                <div class="row text-muted my-2">Choix multiples
+                                    : {% if question.choixMultiple %}Oui{% else %}Non{% endif %}<br>
+                                    Réponses effacées
+                                    : {% if question.estRAZQuotidien %}tous les jours à {{ heureRAZ }}{% else %}manuellement par l'auteur{% endif %}
+                                    <br>
+                                    Résultats publics
+                                    : {% if question.reponsesPubliques %}Oui{% else %}Non, seul l'auteur pourra voir les résultats.{% endif %}
+                                    <br>
+                                    Réponses anonymes
+                                    : {% if question.reponsesAnonymes %}Oui, on ne pourra voir que le nombre de voix.{% else %}Non{% endif %}
                                 </div>
-                                {% if is_granted("edit", object = question) %}
+                            </div>
+                            {% if is_granted("ROLE_USER") %}
+                                <div class="col">
                                     <div class="row my-1">
-                                        <a class="btn btn-warning"
-                                           href="{{ path('editQuestion', {'id': question.id}) }}">Editer la question</a>
+                                        <a class="btn btn-success" href="{{ path('editReponse', {'id': question.id}) }}">Répondre</a>
                                     </div>
-                                    <div class="row my-1">
-                                        <a class="btn btn-danger"
-                                           href="{{ path('supprimerReponsesQuestion', {'id': question.id}) }}">Supprimer
-                                            toutes les réponses</a>
+                                    {% if is_granted("edit", object = question) %}
+                                        <div class="row my-1">
+                                            <a class="btn btn-warning"
+                                               href="{{ path('editQuestion', {'id': question.id}) }}">Editer la question</a>
+                                        </div>
+                                        <div class="row my-1">
+                                            <a class="btn btn-danger"
+                                               href="{{ path('supprimerReponsesQuestion', {'id': question.id}) }}">Supprimer
+                                                toutes les réponses</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% for choix in question.choixPossibles %}
+                            <div class="row">
+                                <div class="col text-left">
+                                    <div class="row">
+                                        <p class="border-bottom">
+                                            {{ choix.texte }},
+                                            {% if question.reponsesPubliques or is_granted("edit", object=question) %}{{ choix.reponses.count }} voix{% endif %}{% if is_granted("edit", object=question) %} -
+                                            <a href="{{ path('editChoix',{'id': question.id, 'idChoix': choix.id}) }}">
+                                                    éditer le choix</a>{% endif %}
+                                        </p>
                                     </div>
-                                {% endif %}
+                                    <div class="row">
+                                        <ul>
+                                            {% for reponse in choix.reponses %}
+                                                {% if is_granted("view", object = reponse) %}
+                                                    <li>{{ reponse.nom }},
+                                                        {{ reponse.deposeeLe | date('d/m H:i') }}{% if reponse.commentaire is not null %}, {{ reponse.commentaire }}{% endif %}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if is_granted("edit", object=question) %}
+                            <div class="row">
+                                <a class="btn btn-success" href="{{ path('editChoix', {'id': question.id}) }}">Ajouter un
+                                    choix</a>
                             </div>
                         {% endif %}
                     </div>
-                    {% for choix in question.choixPossibles %}
-                        <div class="row">
-                            <div class="col text-left">
-                                <div class="row">
-                                    <p class="border-bottom">
-                                        {{ choix.texte }},
-                                        {% if question.reponsesPubliques or is_granted("edit", object=question) %}{{ choix.reponses.count }} voix{% endif %}{% if is_granted("edit", object=question) %} -
-                                        <a href="{{ path('editChoix',{'id': question.id, 'idChoix': choix.id}) }}">
-                                                éditer le choix</a>{% endif %}
-                                    </p>
-                                </div>
-                                <div class="row">
-                                    <ul>
-                                        {% for reponse in choix.reponses %}
-                                            {% if is_granted("view", object = reponse) %}
-                                                <li>{{ reponse.nom }},
-                                                    {{ reponse.deposeeLe | date('d/m H:i') }}{% if reponse.commentaire is not null %}, {{ reponse.commentaire }}{% endif %}</li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% if is_granted("edit", object=question) %}
-                        <div class="row">
-                            <a class="btn btn-success" href="{{ path('editChoix', {'id': question.id}) }}">Ajouter un
-                                choix</a>
-                        </div>
-                    {% endif %}
-                </div>
+                {% endif %}
                 {% set valeur = valeur + 1 %}
             {% endfor %}
         </div>

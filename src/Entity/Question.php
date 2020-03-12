@@ -74,6 +74,11 @@ class Question
      */
     private $reponsesAnonymes;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $estVisible;
+
     public function __construct()
     {
         $this->choixPossibles = new ArrayCollection();
@@ -251,6 +256,18 @@ class Question
     public function setReponsesAnonymes(bool $reponsesAnonymes) : self
     {
         $this->reponsesAnonymes = $reponsesAnonymes;
+
+        return $this;
+    }
+
+    public function getEstVisible() : ?bool
+    {
+        return $this->estVisible;
+    }
+
+    public function setEstVisible(bool $estVisible) : self
+    {
+        $this->estVisible = $estVisible;
 
         return $this;
     }

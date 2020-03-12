@@ -6,13 +6,13 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -23,6 +23,7 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
     private $client;
     private $urlGenerator;
     private $logger;
+    private $session;
 
     private const baseUrl = "https://etu.utt.fr";
 
@@ -31,12 +32,14 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
      *
      * @param UrlGeneratorInterface $urlGenerator
      * @param LoggerInterface       $logger
+     * @param Session               $session
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, LoggerInterface $logger)
+    public function __construct(UrlGeneratorInterface $urlGenerator, LoggerInterface $logger, Session $session)
     {
         $this->urlGenerator = $urlGenerator;
         $this->client       = HttpClient::create();
         $this->logger       = $logger;
+        $this->session      = $session;
     }
 
 
@@ -96,11 +99,14 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        throw new AccessDeniedHttpException("Accès refusé");
+        $this->session->getFlashBag()
+            ->add("danger", "Nous n'avons pas pu vous authentifier, veuillez vous reconnecter.");
+        return $this->urlGenerator->generate("accueil");
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        $this->session->getFlashBag()->add("success", "Vous êtes connecté !");
         return NULL;
     }
 
