@@ -21,8 +21,8 @@
                                             aria-controls="question{{ valeur }}"
                                             aria-selected="{% if valeur == 0 %}true{% else %}false{% endif %}">{{ question.titre }}</a>
                     </li>
+                    {% set valeur = valeur + 1 %}
                 {% endif %}
-                {% set valeur = valeur + 1 %}
             {% endfor %}
         </ul>
         {% set valeur = 0 %}
@@ -103,8 +103,8 @@
                             </div>
                         {% endif %}
                     </div>
+                    {% set valeur = valeur + 1 %}
                 {% endif %}
-                {% set valeur = valeur + 1 %}
             {% endfor %}
         </div>
     </div>
