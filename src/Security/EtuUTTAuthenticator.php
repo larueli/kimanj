@@ -6,9 +6,9 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -32,9 +32,9 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
      *
      * @param UrlGeneratorInterface $urlGenerator
      * @param LoggerInterface       $logger
-     * @param Session               $session
+     * @param SessionInterface      $session
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, LoggerInterface $logger, Session $session)
+    public function __construct(UrlGeneratorInterface $urlGenerator, LoggerInterface $logger, SessionInterface $session)
     {
         $this->urlGenerator = $urlGenerator;
         $this->client       = HttpClient::create();
