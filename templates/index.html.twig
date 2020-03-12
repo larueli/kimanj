@@ -15,11 +15,13 @@
         {% set valeur = 0 %}
         <ul class="nav nav-tabs" role="tablist">
             {% for question in questions %}
-                <li class="nav-item"><a class="nav-link{% if valeur == 0 %} active{% endif %}" id="{{ valeur }}-tab"
-                                        data-toggle="tab" href="#question{{ valeur }}" role="tab"
-                                        aria-controls="question{{ valeur }}"
-                                        aria-selected="{% if valeur == 0 %}true{% else %}false{% endif %}">{{ question.titre }}</a>
-                </li>
+                {% if is_granted("view", object = question) %}
+                    <li class="nav-item"><a class="nav-link{% if valeur == 0 %} active{% endif %}" id="{{ valeur }}-tab"
+                                            data-toggle="tab" href="#question{{ valeur }}" role="tab"
+                                            aria-controls="question{{ valeur }}"
+                                            aria-selected="{% if valeur == 0 %}true{% else %}false{% endif %}">{{ question.titre }}</a>
+                    </li>
+                {% endif %}
                 {% set valeur = valeur + 1 %}
             {% endfor %}
         </ul>
