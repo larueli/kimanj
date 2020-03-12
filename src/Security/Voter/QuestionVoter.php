@@ -30,7 +30,7 @@ class QuestionVoter extends Voter
                 return $user instanceof UserInterface && ( is_null($subject->getId()) || $subject->getUuid() === $user->getUsername() );
                 break;
             case self::VIEW:
-                return $subject->getEstVisisble() || $this->voteOnAttribute(self::EDIT, $subject, $token);
+                return $subject->getEstVisible() || $this->voteOnAttribute(self::EDIT, $subject, $token);
                 break;
         }
 
