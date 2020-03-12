@@ -6,8 +6,9 @@ Kimanj est une application de sondage ayant pour but de désengorger les convers
 ## Fonctionnalités (v2) :
 * Connexion via le [site etu](https://etu.utt.fr/api/panel) de l'[Université de Technologie de Troyes](https://www.utt.fr)
 * Réinitialisation des réponses sur certaines questions via cron
-* Réponses anonymes ou non
-* Résultats publics ou non
+* Réponses anonymes ou non (affichage des noms des personnes qui ont répondu ou seulement du nombre de réponses pour chaque option)
+* Résultats publics ou non (affichage des résultats, éventuellement anonymes, pour tous ou seulement l'auteur)
+* Affichage ou non de la question
 * Affichage compatible smartphone / tablettes
 * Affichage ergonomique des questions sur une seule page
 * Développé avec Symfony 4.4 / Doctrine 2.7 / Bootstrap 4.1
@@ -50,7 +51,7 @@ sudo -u www-data php bin/console doctrine:migrations:migrate
 ```
 # Stopper le serveur web / bloquer l'accès puis
 
-sudo -u www-data php bin/console doctrine:schema:drop --full-database
+sudo -u www-data php bin/console doctrine:schema:drop --full-database --force
 
 # Effacer les dossiers src/Migrations et Images puis
 
