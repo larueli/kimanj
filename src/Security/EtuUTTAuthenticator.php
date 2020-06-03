@@ -71,7 +71,7 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
             return array("uuid" => $donneesEtu[ "data" ][ "login" ], "token" => $contenu[ "access_token" ],
                          "nom"  => $donneesEtu[ "data" ][ "fullName" ]);
         } catch (Exception | TransportExceptionInterface |  ClientExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface $e) {
-            $this->logger->addCritical("Erreur site etu : " . $e->getMessage());
+            $this->logger->critical("Erreur site etu : " . $e->getMessage());
         }
         return NULL;
     }
@@ -92,7 +92,7 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
             $donneesEtu = json_decode($response->getContent(), true);
             return $credentials[ "uuid" ] === $user->getUsername() && $credentials[ "uuid" ] === $donneesEtu[ "data" ][ "login" ];
         } catch (Exception | ClientExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface | TransportExceptionInterface $e) {
-            $this->logger->addCritical("Erreur site etu : " . $e->getMessage());
+            $this->logger->critical("Erreur site etu : " . $e->getMessage());
         }
         return false;
     }
@@ -104,7 +104,7 @@ class EtuUTTAuthenticator extends AbstractGuardAuthenticator
         return $this->urlGenerator->generate("accueil");
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         $this->session->getFlashBag()->add("success", "Vous êtes connecté !");
         return NULL;
