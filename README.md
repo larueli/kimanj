@@ -11,7 +11,7 @@ Kimanj est une application de sondage ayant pour but de désengorger les convers
 * Affichage ou non de la question
 * Affichage compatible smartphone / tablettes
 * Affichage ergonomique des questions sur une seule page
-* Développé avec Symfony 4.4 / Doctrine 2.7 / Bootstrap 4.1
+* Développé avec PHP 7.4 / Symfony 5.1 / Doctrine 2.7 / Twig 3 + Bootstrap 4.1
 
 ## Captures d'écran
 ### Page d'accueil

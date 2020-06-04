@@ -8,7 +8,7 @@
         "ext-json": "*",
         "laminas/laminas-code": "^3.4",
         "sensio/framework-extra-bundle": "^5.1",
-        "symfony/asset": "5.0.*",
+        "symfony/asset": "5.*",
         "symfony/console": "5.*",
         "symfony/dotenv": "5.*",
         "symfony/expression-language": "5.*",
