@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  kimanj:
+    image: "larueli/kimanj"
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_ENV=prod
+      - APP_SECRET=CHANGEMEEEEEEEEEEE
+      - DATABASE_URL=mysql://userKimanj:superSecretPasswordToChange@db:3306/kimanj
+      - CLIENT_ID=my_etu_utt_client_id
+      - CLIENT_SECRET=my_etu_utt_client_secret
+      - HEURE_RAZ=time_reinit_cron_like_21h00
+  db:
+    image: "mariadb"
+    restart: always
+    volumes:
+      - ./dbStorage:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=superRootPasswordToChange
+      - MYSQL_DATABASE=kimanj
+      - MYSQL_USER=userKimanj
+      - MYSQL_PASSWORD=superSecretPasswordToChange
