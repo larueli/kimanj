@@ -4,6 +4,6 @@ twig:
     strict_variables: '%kernel.debug%'
     exception_controller: null
     date:
-        timezone: Europe/Paris
+      timezone: Europe/Paris
     form_themes:
-        - bootstrap_4_layout.html.twig
+      - bootstrap_4_layout.html.twig
